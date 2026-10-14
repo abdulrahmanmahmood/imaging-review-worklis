@@ -1,0 +1,15 @@
+.env
+.DS_Store
+*.log
+node_modules/
+.pnpm-store/
+.next/
+dist/
+coverage/
+test-results/
+playwright-report/
+blob-report/
+*.tsbuildinfo
+
+# Duplicate local copies; canonical synthetic fixtures live under src/assets/dicom.
+/backend/*.dcm
