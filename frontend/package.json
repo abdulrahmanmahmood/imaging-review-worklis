@@ -1,0 +1,50 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "api:generate": "kubb generate",
+    "api:watch": "kubb generate --watch",
+    "dev": "next dev --webpack --port 3001",
+    "build": "next build --webpack",
+    "start": "next start --port 3001",
+    "lint": "eslint",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed"
+  },
+  "dependencies": {
+    "@cornerstonejs/core": "^5.11.7",
+    "@cornerstonejs/dicom-image-loader": "^5.11.7",
+    "@cornerstonejs/tools": "^5.11.7",
+    "@tanstack/react-query": "^5.104.2",
+    "dicom-parser": "^1.8.21",
+    "next": "16.4.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@kubb/plugin-fetch": "^5.5.11",
+    "@kubb/plugin-react-query": "^5.3.3",
+    "@kubb/plugin-ts": "^5.0.10",
+    "@playwright/test": "^1.64.0",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.8",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6.1.2",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.0",
+    "jsdom": "^30.1.2",
+    "kubb": "^5.9.2",
+    "postcss": "^8.5.30",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^5.0.4"
+  },
+  "packageManager": "pnpm@11.5.2"
+}
