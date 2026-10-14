@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: craftcrew
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: craftcrew
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d craftcrew"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      DATABASE_TYPE: postgres
+      DATABASE_HOST: localhost
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: craftcrew
+      DATABASE_NAME: craftcrew
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.5.2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: |
+            backend/pnpm-lock.yaml
+            frontend/pnpm-lock.yaml
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify backend
+        working-directory: backend
+        run: |
+          pnpm exec tsc --noEmit
+          pnpm exec eslint "{src,apps,libs,test}/**/*.ts"
+          pnpm test --runInBand
+          pnpm run migration:run
+          pnpm run seed
+          pnpm run test:e2e --runInBand
+          pnpm run smoke:contention
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify frontend
+        working-directory: frontend
+        run: |
+          pnpm exec tsc --noEmit
+          pnpm run lint
+          pnpm run test:run
+          pnpm run build
+
+      - name: Install Chromium
+        working-directory: frontend
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run browser tests
+        working-directory: frontend
+        run: pnpm run test:e2e
+
+      - name: Validate Docker Compose
+        run: docker compose config --quiet
