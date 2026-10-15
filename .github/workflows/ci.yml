@@ -72,7 +72,7 @@ jobs:
       - name: Verify frontend
         working-directory: frontend
         run: |
-          pnpm exec tsc --noEmit
+          pnpm run typecheck
           pnpm run lint
           pnpm run test:run
           pnpm run build
